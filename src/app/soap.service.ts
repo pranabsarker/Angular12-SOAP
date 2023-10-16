@@ -9,6 +9,7 @@ import {map} from 'rxjs/operators';
 
 export class SoapService {
 
+    // @ts-ignore
     client: Client;
 
     private  clientReady =  new BehaviorSubject(false);
@@ -21,7 +22,6 @@ export class SoapService {
                 this.client = client;
                 this.clientReady.next(true);
             })
-
     }
 
     clientState(){
@@ -31,10 +31,20 @@ export class SoapService {
     getAllProducts(){
         return this.client.call('GetProducts',{}).pipe(
             map(data => {
-                console.log('data: ',data);
-                return data.result.GetProductsResult.Name;
+                return data.result.GetProductsResult.Product;
             })
         )
+    }
+
+    deleteProduct(productId: number){
+      const params = {
+        id: productId
+      }
+      return this.client.call('DeleteProduct',params).pipe(
+        map(data => {
+          return data.result.DeleteProductResult;
+        })
+      )
     }
 
 }
